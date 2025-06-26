@@ -69,6 +69,18 @@ resource "azurerm_network_security_group" "VM_nsg" {
     destination_address_prefix = "*"
   }
 
+  security_rule {
+    name                       = "AllowAnyCustom3000Inbound"
+    priority                   = 1020
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "3000"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+  
   tags = {
     environment = "Production"
   }
@@ -86,13 +98,13 @@ resource "azurerm_linux_virtual_machine" "vm1" {
   resource_group_name = azurerm_resource_group.main.name
   location            = azurerm_resource_group.main.location
   size                = "Standard_F2"
-  admin_username      = "adminuser"
+  admin_username      = "azureuser"
   network_interface_ids = [
     azurerm_network_interface.nic_vm1.id,
   ]
 
   admin_ssh_key {
-    username   = "adminuser"
+    username   = "azureuser"
     public_key = file("/home/khant/.ssh/vm.pub")
   }
 
@@ -114,7 +126,7 @@ resource "local_file" "inventory_yml" {
         instance_name   = azurerm_linux_virtual_machine.vm1.name
         instance_ip     = azurerm_public_ip.pub_ip.ip_address 
         instance_key    = "/home/khant/.ssh/vm.pem"
-        ansible_user    = "adminuser"
+        ansible_user    = "azureuser"
 
     })
 

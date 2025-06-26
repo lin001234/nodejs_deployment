@@ -3,38 +3,37 @@
 - name: Extract repo name from URL
   ansible.builtin.set_fact:
     repository_name: "{{ repository_url.split('/')[-1].split('.')[0] }}"
+    user_dir: "/home/{{ ansible_user }}"
 
-- name: Create web directory
+- name: Ensure directory is empty
   ansible.builtin.file:
-    path: "{{ ansible_facts.user_dir }}/{{ repository_name }}/hello-world-app"
-    state: directory
-    mode: "0755"
-    ownder: azureuser
-    group: azureuser
+    path: "{{ user_dir }}/{{ repository_name }}"
+    state: absent
 
 - name: Fetch app files
   ansible.builtin.git:
     repo: "{{ repository_url }}"
-    dest: "{{ ansible_facts.user_dir }}/{{ repository_name }}"
-
+    dest: "{{ user_dir }}/{{ repository_name }}"
+    force: yes
+    
 - name: Install npm dependencies & build app
   ansible.builtin.shell: |
-    npm Install
+    npm install
     npm run build
   args:
     executable: /bin/bash
-    chdir: "{{ ansible_facts.user_dir }}/{{ repository_name }}/hello-world-app"
+    chdir: "{{ user_dir }}/{{ repository_name }}/app"
   changed_when: true
 
 - name: Create service unit
   ansible.builtin.template:
     src: templates/nodejs-server-service.j2
-    dest: /etc/systemd/system/nodejs-server-service
+    dest: /etc/systemd/system/nodejs-server.service
     owner: azureuser
     group: azureuser
     mode: "0644"
   vars:
-    working_directory: "{{ ansible_facts.user_dir }}/{{ repository_name }}/hello-world-app"
+    working_directory: "{{ user_dir }}/{{ repository_name }}/app"
 
 - name: Reload daemon and start new service
   ansible.builtin.systemd:
