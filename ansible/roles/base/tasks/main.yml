@@ -1,0 +1,24 @@
+---
+# tasks file for base
+
+- name: Add nodesource Apt repo for node.js 22
+  ansible.builtin.apt_key:
+    url: "https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key"
+    state: present
+
+- name: Add Node.js 22 repository
+  ansible.builtin.apt_repository:
+    repo: "deb https://deb.nodesource.com/node_22.x nodistro main"
+    state: present
+    
+- name: Install Nodejs,npm
+  ansible.builtin.apt:
+    name: nodejs
+    state: present
+    update_cache: yes
+
+- name: Install git
+  ansible.builtin.apt:
+    name: git
+    state: present
+    update_cache: yes

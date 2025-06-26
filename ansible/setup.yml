@@ -1,0 +1,10 @@
+---
+- name: Configure management
+  hosts: all
+  become: true  #run tasks with superuser privilege
+
+  roles:
+  - role: base
+    tags: base
+  - role: app
+    tags: app
