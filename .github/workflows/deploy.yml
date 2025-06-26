@@ -1,0 +1,30 @@
+name: 'Deployment app with Ansible'
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Run ansible playbook
+      uses: dawidd6/action-ansible-playbook@v4
+      with:
+        playbook: setup.yml
+        directory: ansible
+        key: ${{ secrets.SSH_PRIV_KEY }}
+        options: |
+          --inventory inventory.ini
+          --extra-vars repository_url=${{ github.server_url }}/${{ github.repository }}.git
+      
+      
