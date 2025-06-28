@@ -97,7 +97,7 @@ resource "azurerm_linux_virtual_machine" "vm1" {
   name                = "vm1-dev-myproject"
   resource_group_name = azurerm_resource_group.main.name
   location            = azurerm_resource_group.main.location
-  size                = "Standard_F2"
+  size                = "Standard_B1ls"
   admin_username      = "azureuser"
   network_interface_ids = [
     azurerm_network_interface.nic_vm1.id,
