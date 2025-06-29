@@ -17,11 +17,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Check working directory
-      run: |
-        echo "Current working directory: $(pwd)"
-        ls -R
-        
     - name: Run ansible playbook
       uses: dawidd6/action-ansible-playbook@v4
       with:
