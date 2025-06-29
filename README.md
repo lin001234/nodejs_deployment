@@ -11,8 +11,9 @@
     ```
 
 ### 3. Set up deploy.tf for deployment of VM 
-    1. Add public IP, security group to allow SSH
-    2. Use tf to inject dynamic values into inventory.tml
+    1. Create SSH key pair locally to add to VM
+    2. Add public IP, security group to allow SSH
+    3. Use tf to inject dynamic values into inventory.tml
 
 ### 4. Initialize terraform
 ```
@@ -29,20 +30,19 @@
 ## Set up ansible playbook
 
 ### 1. Make setup.yml playbook 
-It runs Ansible roles (base, nginx, app & ssh) with superuser previleges on all hosts, automating server configuration
+It runs Ansible roles (base & app) with superuser previleges on all hosts, automating server configuration
 
 ### 2. Create roles folder with the roles
 
 ### Create a base role
-  Base role responsible for setting up utilities, update server, install fail2ban.
-
-### Create nginx role
-  1. Install and configure Nginx.
-  2. Create template file nginx.conf.j2 for Nginx configuration
-  3. Create handler that will restart Nginx(For when config changes)
-
-### Create the app role
+  - Base role responsible for setting up utilities like nodejs.
   
+### Create the app role
+  - Clone repo from github
+  - Install npm dependencies & build app
+  - Create systemd service for easier management
 
-### Create ssh role
-  Adds public SSH key to the server.
+## Set up github workflows (Due to insufficient access control, unable to automate terraform )
+- Set up secrets for ssh private key
+- Run and deploy ansible playbook on push
+
